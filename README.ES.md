@@ -39,7 +39,7 @@ pnpm dev
 
 - [Astro](https://astro.build/) - Framework web moderno
 - [Tailwind CSS v4](https://tailwindcss.com/) - Framework CSS utilitario
-- [OKLCH Color Space](https://evilmartians.com/chronicles/oklch-in-css-why-quit-hsl) - Espacio de color perceptualmente uniforme
+- [OKLCH Color Space](https://evilmartians.com/chronicles/oklch-in-css-why-quit-rgb-hsl) - Espacio de color perceptualmente uniforme
 - [Astro Expressive Code](https://expressive-code.com/) - Syntax highlighting
 - [TypeScript](https://www.typescriptlang.org/) - Tipado estático
 
