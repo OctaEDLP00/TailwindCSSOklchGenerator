@@ -21,7 +21,8 @@ const colorScale = generateScale(DEFAULT_COLOR)
     <section
       data-section='code'
       class='w-full px-4 py-2'
-    ></section>
+    >
+    </section>
   </main>
   <Footer />
 </Layout>
@@ -96,18 +97,18 @@ const colorScale = generateScale(DEFAULT_COLOR)
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ code: codeContent, lang: 'css', class: 'mx-auto w-[85%] md:w-1/2' }),
-      });
+      })
 
       if (response.ok) {
-        const { html } = await response.json();
+        const { html } = await response.json()
         if (codeSection) {
-          codeSection.innerHTML = html;
+          codeSection.innerHTML = html
         }
       } else {
-        console.error('Failed to render code');
+        console.error('Failed to render code')
       }
     } catch (error) {
-      console.error('Error updating code block:', error);
+      console.error('Error updating code block:', error)
     }
   }
 
