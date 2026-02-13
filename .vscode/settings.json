@@ -1,0 +1,53 @@
+{
+  "[astro]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[astro]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[html]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[json]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[jsonc]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "css.customData": ["./tailwindcss.json"],
+  "editor.codeActionsOnSave": {
+    "source.fixAll": "explicit",
+    "source.fixAll.eslint": "explicit"
+  },
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.detectIndentation": false,
+  "editor.formatOnSave": true,
+  "editor.insertSpaces": false,
+  "editor.quickSuggestions": {
+    "strings": "on"
+  },
+  "eslint.enable": true,
+  "eslint.run": "onType",
+  "eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact", "astro"],
+  "explorer.fileNesting.patterns": {
+    "README.md": "CHANGELOG.md, CONTRIBUTING.md, *.md, Desktop - DarkMode.jpg, Desktop - LightMode.jpg"
+  },
+  "files.associations": {
+    "*.css": "tailwindcss",
+    "*.mdx": "mdx",
+    "*.svg": "xml"
+  },
+  "javascript.format.insertSpaceBeforeFunctionParenthesis": true,
+  "json.validate.enable": false,
+  "prettier.documentSelectors": ["**/*.astro"],
+  "prettier.enable": true,
+  "[xml]": {
+    "editor.defaultFormatter": "rogalmic.vscode-xml-complete"
+  }
+}

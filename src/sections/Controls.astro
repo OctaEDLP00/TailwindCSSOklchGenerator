@@ -1,0 +1,83 @@
+<section
+  data-section='controls'
+  class='flex flex-col items-center justify-center'
+>
+  <div class='grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3'>
+    <!-- HEX Input -->
+    <div class='space-y-2'>
+      <label
+        for='hexInput'
+        class='block text-base font-medium tracking-wide text-neutral-600 uppercase'
+        >HEX Value</label
+      >
+      <input
+        type='text'
+        id='hexInput'
+        placeholder='#ef4444'
+        class='h-12 w-full rounded-lg border border-neutral-200 bg-neutral-50 px-4 font-mono text-sm transition-all focus:border-transparent focus:ring-2 focus:ring-blue-500 focus:outline-none'
+      />
+    </div>
+
+    <!-- Chroma Override -->
+    <div class='space-y-2'>
+      <label
+        for='chromaSlider'
+        class='block text-base font-medium tracking-wide text-neutral-600 uppercase'
+      >
+        Chroma <span
+          id='chromaValue'
+          class='text-xs font-normal text-neutral-400'
+          >0.200</span
+        >
+      </label>
+      <input
+        type='range'
+        id='chromaSlider'
+        min='0'
+        max='0.4'
+        step='0.001'
+        value='0.2'
+        class='h-2 w-full cursor-pointer appearance-none rounded-lg bg-neutral-200 accent-blue-500'
+      />
+      <div class='flex justify-between text-xs text-neutral-400'>
+        <span>0</span>
+        <span>0.4</span>
+      </div>
+    </div>
+
+    <!-- Hue Override -->
+    <div class='space-y-2'>
+      <label
+        for='hueSlider'
+        class='block text-base font-medium tracking-wide text-neutral-600 uppercase'
+      >
+        Hue <span
+          id='hueValue'
+          class='text-xs font-normal text-neutral-400'
+          >180°</span
+        >
+      </label>
+      <input
+        type='range'
+        id='hueSlider'
+        min='0'
+        max='360'
+        step='1'
+        value='180'
+        class='h-2 w-full cursor-pointer appearance-none rounded-lg bg-neutral-200 accent-blue-500'
+      />
+      <div class='flex justify-between text-xs text-neutral-400'>
+        <span>0</span>
+        <span>360</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Action Button -->
+  <button
+    id='resetBtn'
+    class='cursor-pointer rounded-lg border border-neutral-300 bg-white px-6 py-3 text-sm font-medium text-neutral-700 shadow-sm transition-all hover:bg-neutral-50 hover:shadow active:scale-95'
+  >
+    Reset
+  </button>
+</section>

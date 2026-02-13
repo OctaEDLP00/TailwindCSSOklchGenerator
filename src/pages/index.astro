@@ -1,11 +1,165 @@
 ---
-import Welcome from '../components/Welcome.astro';
-import Layout from '../layouts/Layout.astro';
+import Layout from '~/layouts/Layout.astro'
+import Navbar from '~/components/Navbar.astro'
+import Header from '~/components/Header.astro'
+import Footer from '~/components/Footer.astro'
+import Controls from '~/sections/Controls.astro'
+import PalettePreview from '~/sections/PalettePreview.astro'
 
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+import { generateScale } from '~/lib/index.ts'
+
+// Valores por defecto para SSR
+const DEFAULT_COLOR = '#ef4444'
+
+// Generar escala de colores
+const colorScale = generateScale(DEFAULT_COLOR)
 ---
 
 <Layout>
-	<Welcome />
+  <Navbar />
+  <main class='h-full w-screen'>
+    <Header />
+    <Controls value={DEFAULT_COLOR} />
+    <PalettePreview colors={colorScale} />
+    <section
+      data-section='code'
+      class='w-full px-4 py-2'
+    ></section>
+  </main>
+  <Footer />
 </Layout>
+
+<script>
+  import { normalizeHex, generateScale, oklchToHex } from '~/lib/index.ts'
+
+  const hueValue = document.querySelector('#hueValue') as HTMLSpanElement
+  const chromaValue = document.querySelector('#chromaValue') as HTMLSpanElement
+  const hueSlider = document.querySelector('#hueSlider') as HTMLInputElement
+  const chromaSlider = document.querySelector('#chromaSlider') as HTMLInputElement
+  const hexInput = document.querySelector('#hexInput') as HTMLInputElement
+  const resetBtn = document.querySelector('#resetBtn') as HTMLButtonElement
+  const palettePreview = document.querySelector('#palette-preview') as HTMLElement
+  const codeSection = document.querySelector('[data-section="code"]') as HTMLElement
+
+  let currentHex = '#ef4444'
+  const colorName = 'custom'
+
+  function updateHueValue() {
+    const hue = parseFloat(hueSlider.value)
+    hueValue.textContent = `${hue.toFixed(0)}°`
+  }
+
+  function updateChromaValue() {
+    const chroma = parseFloat(chromaSlider.value)
+    chromaValue.textContent = chroma.toFixed(3)
+  }
+
+  async function updatePalette() {
+    const hex = hexInput.value
+    const normalized = normalizeHex(hex)
+
+    if (!normalized) {
+      console.error('Invalid HEX color:', hexInput.value)
+      return
+    }
+
+    currentHex = normalized
+
+    const chroma = parseFloat(chromaSlider.value)
+    const hue = parseFloat(hueSlider.value)
+
+    // Usar los valores de los sliders directamente
+    const chromaOverride = chroma
+    const hueOverride = hue
+
+    console.log('Generating scale with:', { currentHex, chromaOverride, hueOverride })
+
+    const scale = generateScale(currentHex, chromaOverride, hueOverride)
+
+    console.log('Generated scale:', scale)
+
+    // Update palette preview
+    const colorDivs = palettePreview.querySelectorAll('[data-shade]')
+    colorDivs.forEach((div, index) => {
+      if (scale[index]) {
+        const colorDiv = div as HTMLElement
+        // Convertir OKLCH a HEX para mejor compatibilidad
+        const hexColor = oklchToHex(scale[index].oklch)
+        colorDiv.style.backgroundColor = hexColor
+        colorDiv.title = scale[index].css
+        console.log(`Setting shade ${scale[index].shade} to ${hexColor}`)
+      }
+    })
+
+    // Update code block via API
+    const codeContent = `@theme {\n${scale.map(({ shade, css }) => `  --color-${colorName}-${shade}: ${css};`).join('\n')}\n}`
+
+    try {
+      const response = await fetch('/api/render-code', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code: codeContent, lang: 'css', class: 'mx-auto w-[85%] md:w-1/2' }),
+      });
+
+      if (response.ok) {
+        const { html } = await response.json();
+        if (codeSection) {
+          codeSection.innerHTML = html;
+        }
+      } else {
+        console.error('Failed to render code');
+      }
+    } catch (error) {
+      console.error('Error updating code block:', error);
+    }
+  }
+
+  async function resetOverrides() {
+    hueSlider.value = '180'
+    chromaSlider.value = '0.2'
+    hexInput.value = '#ef4444'
+    updateHueValue()
+    updateChromaValue()
+    await updatePalette()
+  }
+
+  // Event listeners
+  hexInput?.addEventListener('input', async () => {
+    const hex = hexInput.value
+    const normalized = normalizeHex(hex)
+    if (normalized && normalized !== currentHex) {
+      hexInput.value = normalized
+      await updatePalette()
+    }
+  })
+
+  hueSlider?.addEventListener('input', () => {
+    updateHueValue()
+    // Opcional: actualizar en tiempo real mientras arrastras
+    // updatePalette()
+  })
+
+  hueSlider?.addEventListener('change', async () => {
+    await updatePalette()
+  })
+
+  chromaSlider?.addEventListener('input', () => {
+    updateChromaValue()
+    // Opcional: actualizar en tiempo real mientras arrastras
+    // updatePalette()
+  })
+
+  chromaSlider?.addEventListener('change', async () => {
+    await updatePalette()
+  })
+
+  resetBtn?.addEventListener('click', async (e: MouseEvent) => {
+    e.preventDefault()
+    await resetOverrides()
+  })
+
+  // Initialize on load
+  document.addEventListener('DOMContentLoaded', async () => {
+    await updatePalette()
+  })
+</script>

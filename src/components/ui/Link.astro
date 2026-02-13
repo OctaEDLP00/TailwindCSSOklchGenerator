@@ -1,0 +1,24 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+
+interface Props extends Omit<HTMLAttributes<'a'>, 'href'> {
+  to: string
+  external?: boolean
+}
+
+// Detectar si es link externo
+const isExternal = Astro.props.external || Astro.props.to.startsWith('http') || Astro.props.to.startsWith('https')
+const target = isExternal ? '_blank' : undefined
+const rel = isExternal ? 'noopener noreferrer' : undefined
+---
+
+<a
+  href={Astro.props.to}
+	title={Astro.props.to}
+  target={target}
+  rel={rel}
+  {...Astro.props}
+>
+  <slot />
+</a>
+
