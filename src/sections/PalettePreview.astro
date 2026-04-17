@@ -1,5 +1,5 @@
 ---
-import type { ColorScale } from '~/types'
+import type { ColorScale, ColorScaleItem } from '~/types'
 
 interface Props {
   colors: ColorScale
@@ -13,16 +13,19 @@ const { colors } = Astro.props
   class='my-6 flex flex-wrap justify-center gap-4'
   id='palette-preview'
 >
-  {colors.map(({ shade, hex }) => (
-    <div
-      class:list={['group relative size-14 rounded-xl shadow-sm transition-transform hover:scale-110 cursor-pointer', `bg-[${hex}]`]}
-      data-shade={shade}
-    >
-      <span class='absolute inset-0 flex items-center justify-center opacity-0 transition-opacity group-hover:opacity-100'>
-        <span class='rounded bg-black/50 px-1.5 py-0.5 text-[10px] font-mono text-white'>
-          {shade}
+  {
+    colors.map(({ shade, hex }: ColorScaleItem) => (
+      <div
+        class='group relative size-14 cursor-pointer rounded-xl shadow-sm transition-transform hover:scale-110'
+        style={`background-color: ${hex};`}
+        data-shade={shade}
+      >
+        <span class='absolute inset-0 flex items-center justify-center opacity-0 transition-opacity group-hover:opacity-100'>
+          <span class='rounded bg-black/50 px-1.5 py-0.5 font-mono text-[10px] text-white'>
+            {shade}
+          </span>
         </span>
-      </span>
-    </div>
-  ))}
+      </div>
+    ))
+  }
 </section>

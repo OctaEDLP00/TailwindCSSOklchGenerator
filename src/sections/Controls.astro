@@ -2,20 +2,31 @@
   data-section='controls'
   class='flex flex-col items-center justify-center'
 >
-  <div class='grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3'>
-    <!-- HEX Input -->
+  <div class='flex flex-col items-center justify-center gap-6 space-x-2 sm:flex-row'>
+    <!-- Lightness -->
     <div class='space-y-2'>
       <label
-        for='hexInput'
+        for='lightnessSlider'
         class='block text-base font-medium tracking-wide text-neutral-600 uppercase'
-        >HEX Value</label
       >
+        Lightness <span
+          id='lightnessValue'
+          class='text-xs font-normal text-neutral-400'
+        ></span>
+      </label>
       <input
-        type='text'
-        id='hexInput'
-        placeholder='#ef4444'
-        class='h-12 w-full rounded-lg border border-neutral-200 bg-neutral-50 px-4 font-mono text-sm transition-all focus:border-transparent focus:ring-2 focus:ring-blue-500 focus:outline-none'
+        type='range'
+        id='lightnessSlider'
+        min='0.5'
+        max='1.5'
+        step='0.05'
+        value='1'
+        class='h-2 w-full cursor-pointer appearance-none rounded-lg bg-neutral-200 accent-blue-500'
       />
+      <div class='flex justify-between text-xs text-neutral-400'>
+        <span>Darker</span>
+        <span>Lighter</span>
+      </div>
     </div>
 
     <!-- Chroma Override -->
@@ -27,8 +38,7 @@
         Chroma <span
           id='chromaValue'
           class='text-xs font-normal text-neutral-400'
-          >0.200</span
-        >
+        ></span>
       </label>
       <input
         type='range'
@@ -36,7 +46,6 @@
         min='0'
         max='0.4'
         step='0.001'
-        value='0.2'
         class='h-2 w-full cursor-pointer appearance-none rounded-lg bg-neutral-200 accent-blue-500'
       />
       <div class='flex justify-between text-xs text-neutral-400'>
@@ -54,8 +63,7 @@
         Hue <span
           id='hueValue'
           class='text-xs font-normal text-neutral-400'
-          >180°</span
-        >
+        ></span>
       </label>
       <input
         type='range'
@@ -63,7 +71,6 @@
         min='0'
         max='360'
         step='1'
-        value='180'
         class='h-2 w-full cursor-pointer appearance-none rounded-lg bg-neutral-200 accent-blue-500'
       />
       <div class='flex justify-between text-xs text-neutral-400'>
@@ -76,7 +83,7 @@
   <!-- Action Button -->
   <button
     id='resetBtn'
-    class='cursor-pointer rounded-lg border border-neutral-300 bg-white px-6 py-3 text-sm font-medium text-neutral-700 shadow-sm transition-all hover:bg-neutral-50 hover:shadow active:scale-95'
+    class='m-3 cursor-pointer rounded-lg border border-neutral-300 bg-white px-6 py-3 text-sm font-medium text-neutral-700 shadow-sm transition-all hover:bg-neutral-50 hover:shadow active:scale-95'
   >
     Reset
   </button>

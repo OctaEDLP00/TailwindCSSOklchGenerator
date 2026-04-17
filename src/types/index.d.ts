@@ -1,7 +1,13 @@
-import type { generateScale } from '~/lib/lib'
-
 export type RGB = [r: number, g: number, b: number]
-export type ColorScale = ReturnType<typeof generateScale>
+
+export interface ColorScaleItem {
+  shade: number
+  oklch: { L: number | undefined; C: number; H: number }
+  css: string
+  hex: string
+}
+
+export type ColorScale = Array<ColorScaleItem>
 export interface OKLab {
   L: number
   a: number

@@ -4,11 +4,10 @@ import type { APIRoute } from 'astro'
 
 /**
  * API Route to render Expressive Code components on demand.
- * @type {APIRoute}
  */
 export const POST: APIRoute = async ({ request }) => {
   try {
-    const { code, lang, class: className } = await request.json()
+    const { code, class: className } = await request.json()
 
     if (!code) {
       return new Response(JSON.stringify({ error: 'No code provided' }), {
@@ -20,7 +19,7 @@ export const POST: APIRoute = async ({ request }) => {
     // Create container and render the component
     const container = await AstroContainer.create()
     const html = await container.renderToString(Code, {
-      props: { code, lang: lang || 'css', class: className },
+      props: { code, lang: 'css', class: className },
     })
 
     return new Response(JSON.stringify({ html }), {

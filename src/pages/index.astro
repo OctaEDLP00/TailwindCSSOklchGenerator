@@ -6,17 +6,16 @@ import Footer from '~/components/Footer.astro'
 import Controls from '~/sections/Controls.astro'
 import PalettePreview from '~/sections/PalettePreview.astro'
 import { generateScale } from '~/lib/lib'
-import { DEFAULT_COLOR } from '~/constants/index.ts'
 
-// Generar escala de colores
-const colorScale = generateScale(DEFAULT_COLOR)
+// Generar escala inicial con valores por defecto
+const colorScale = generateScale(null, 0.2, 0, 1)
 ---
 
 <Layout>
   <Navbar />
   <main class='h-full w-screen'>
     <Header />
-    <Controls value={DEFAULT_COLOR} />
+    <Controls />
     <PalettePreview colors={colorScale} />
     <section
       data-section='code'
@@ -28,18 +27,18 @@ const colorScale = generateScale(DEFAULT_COLOR)
 </Layout>
 
 <script>
-  import { normalizeHex, generateScale, oklchToHex } from '~/lib/lib'
+  import { generateScale, oklchToHex } from '~/lib/lib'
 
   const hueValue = document.querySelector('#hueValue') as HTMLSpanElement
   const chromaValue = document.querySelector('#chromaValue') as HTMLSpanElement
+  const lightnessValue = document.querySelector('#lightnessValue') as HTMLSpanElement
   const hueSlider = document.querySelector('#hueSlider') as HTMLInputElement
   const chromaSlider = document.querySelector('#chromaSlider') as HTMLInputElement
-  const hexInput = document.querySelector('#hexInput') as HTMLInputElement
+  const lightnessSlider = document.querySelector('#lightnessSlider') as HTMLInputElement
   const resetBtn = document.querySelector('#resetBtn') as HTMLButtonElement
   const palettePreview = document.querySelector('#palette-preview') as HTMLElement
   const codeSection = document.querySelector('[data-section="code"]') as HTMLElement
 
-  let currentHex = '#ef4444'
   const colorName = 'custom'
 
   function updateHueValue() {
@@ -52,27 +51,19 @@ const colorScale = generateScale(DEFAULT_COLOR)
     chromaValue.textContent = chroma.toFixed(3)
   }
 
+  function updateLightnessValue() {
+    const lightness = parseFloat(lightnessSlider.value)
+    lightnessValue.textContent = lightness.toFixed(3)
+  }
+
   async function updatePalette() {
-    const hex = hexInput.value
-    const normalized = normalizeHex(hex)
-
-    if (!normalized) {
-      console.error('Invalid HEX color:', hexInput.value)
-      return
-    }
-
-    currentHex = normalized
-
     const chroma = parseFloat(chromaSlider.value)
     const hue = parseFloat(hueSlider.value)
+    const lightness = parseFloat(lightnessSlider.value)
 
-    // Usar los valores de los sliders directamente
-    const chromaOverride = chroma
-    const hueOverride = hue
+    console.log('Generating scale with:', { chroma, hue, lightness })
 
-    console.log('Generating scale with:', { currentHex, chromaOverride, hueOverride })
-
-    const scale = generateScale(currentHex, chromaOverride, hueOverride)
+    const scale = generateScale(null, chroma, hue, lightness)
 
     console.log('Generated scale:', scale)
 
@@ -96,7 +87,10 @@ const colorScale = generateScale(DEFAULT_COLOR)
       const response = await fetch('/api/render-code', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ code: codeContent, lang: 'css', class: 'mx-auto w-[85%] md:w-1/2' }),
+        body: JSON.stringify({
+          code: codeContent,
+          class: 'mx-auto w-[85%] md:w-1/2 min-w-auto',
+        }),
       })
 
       if (response.ok) {
@@ -115,22 +109,14 @@ const colorScale = generateScale(DEFAULT_COLOR)
   async function resetOverrides() {
     hueSlider.value = '180'
     chromaSlider.value = '0.2'
-    hexInput.value = '#ef4444'
+    lightnessSlider.value = '1'
     updateHueValue()
     updateChromaValue()
+    updateLightnessValue()
     await updatePalette()
   }
 
   // Event listeners
-  hexInput?.addEventListener('input', async () => {
-    const hex = hexInput.value
-    const normalized = normalizeHex(hex)
-    if (normalized && normalized !== currentHex) {
-      hexInput.value = normalized
-      await updatePalette()
-    }
-  })
-
   hueSlider?.addEventListener('input', () => {
     updateHueValue()
     // Opcional: actualizar en tiempo real mientras arrastras
@@ -148,6 +134,14 @@ const colorScale = generateScale(DEFAULT_COLOR)
   })
 
   chromaSlider?.addEventListener('change', async () => {
+    await updatePalette()
+  })
+
+  lightnessSlider?.addEventListener('input', () => {
+    updateLightnessValue()
+  })
+
+  lightnessSlider?.addEventListener('change', async () => {
     await updatePalette()
   })
 
